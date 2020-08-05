@@ -5,9 +5,9 @@ import math
 pg.init()
 
 prozor = pg.display.set_mode((1500, 1000))
-raketa1 = pg.image.load("raketa1.png")
-raketa2 = pg.image.load("raketa2.png")
-planeta = pg.image.load("world.png")
+raketa1 = pg.image.load("pictures/raketa1.png")
+raketa2 = pg.image.load("pictures/raketa2.png")
+planeta = pg.image.load("pictures/world.png")
 pg.display.set_icon(raketa1)
 pg.display.set_caption("Simulacija rakete")
 mainClock = pg.time.Clock()
