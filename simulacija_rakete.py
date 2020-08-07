@@ -1,5 +1,4 @@
 import pygame as pg
-import time
 import math
 
 pg.init()
@@ -13,17 +12,43 @@ pg.display.set_caption("Simulacija rakete")
 mainClock = pg.time.Clock()
 
 fps = 60
-x = 750
+x = 100
 y = 100
-v_x = 2.23
+v_x = 0
 v_y = 0
 a_p = 0
 a_px = 0
 a_py = 0
 a_g = 0
-tranparent = (0, 0, 0, 0)
 ugaona_brzina = 0
 ugao = 0
+n = 1000
+
+def draw_vektor_g(x, y, a_gx, a_gy):
+    pg.draw.line(prozor, pg.Color("green"), (int(x), int(y)), (int(x + a_gx * 600), int(y + a_gy * 600)), 2)
+
+def draw_vektor_b(x, y, v_x, v_y):
+    pg.draw.line(prozor, pg.Color("red"), (int(x), int(y)), (int(x + v_x * 20), int(y + v_y * 20)), 2)
+
+def draw_putanja(x, y, v_x, v_y, n):
+    x1 = x
+    v_x1 = v_x
+    y1 = y
+    v_y1 = v_y
+    for i in range(0, n, 1):
+        a_gx = -g(x1, y1) * math.cos(ugao_o(x1, y1) / 180 * math.pi)
+        a_gy = g(x1, y1) * math.sin(ugao_o(x1, y1) / 180 * math.pi)
+
+        v_x1 += a_gx
+        x1 += v_x1
+        v_y1 += a_gy
+        y1 += v_y1
+
+        if(i % 10 == 0): pg.draw.circle(prozor, pg.Color("white"), (int(x1), int(y1)), 2)
+        if (d(x1, y1) < 130):
+            break
+        if(math.fabs(x - x1) < 3 and math.fabs(y - y1) < 3 and i > 100):
+            break
 
 def ugao_o(x, y):
     o = math.atan2(y - int(prozor.get_height() / 2), x - int(prozor.get_width() / 2)) / math.pi * 180
@@ -67,7 +92,6 @@ while P:  #main loop
         if event.type == pg.QUIT:
             P = False
 
-
     a_px = math.cos(ugao/180 * math.pi) * a_p
     a_py = -math.sin(ugao/180 * math.pi) * a_p
 
@@ -78,16 +102,17 @@ while P:  #main loop
     a_gx = -g(x, y) * math.cos(ugao_o(x, y)/180 * math.pi)
     a_gy = g(x, y) * math.sin(ugao_o(x, y)/180 * math.pi)
 
-    x += v_x
     v_x += a_px + a_gx
-    y += v_y
+    x += v_x
     v_y += a_py + a_gy
+    y += v_y
 
     if(d(x, y) < 130): pg.quit()
     prozor.fill(pg.Color("Black"))
-    draw_planeta()
+    draw_putanja(x, y, v_x, v_y, n)
     draw_raketa(x, y, ugao)
     draw_planeta()
+    draw_vektor_g(x, y, a_gx, a_gy)
+    draw_vektor_b(x, y, v_x, v_y)
     pg.display.update()
     mainClock.tick(fps)
-    print(str(v_x) + "..." + str(v_y))
